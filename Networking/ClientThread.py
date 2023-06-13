@@ -6,7 +6,9 @@ from threading import *
 
 from Logic.Device import Device
 from Logic.Player import Players
+
 from Packets.PiranhaMessage import packets
+from Logic.PacketsHelper import PacketsHelper
 
 def _(*args):
 	print('[CLIENT]', end=' ')
@@ -42,9 +44,10 @@ class ClientThread(Thread):
 					packet_id = int.from_bytes(header[:2], 'big')
 					length = int.from_bytes(header[2:5], 'big')
 					data = self.recvall(length)
+					packet_name = PacketsHelper.getMessageName(packet_id)
 
 					if packet_id in packets:
-						_(f'Received packet! Id: {packet_id}')
+						_(f'Packet Sent!. Id: {packet_id}, Lenght: {length}, Name: {packet_name}.')
 						message = packets[packet_id](self.client, self.player, data)
 						message.decode()
 						message.process()
